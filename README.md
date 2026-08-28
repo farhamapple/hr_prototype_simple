@@ -73,6 +73,41 @@ Detail soal dan jawaban lengkap tersedia di `soal_jawaban.md`.
 
 ---
 
+## 🔐 Contoh Login
+
+Tampilan halaman login sesuai wireframe di `prototype.md`:
+
+```
+┌─────────────────────────────────────────────┐
+│              SISTEM MANAJEMEN HR             │
+│                                             │
+│  ┌───────────────────────────────────────┐  │
+│  │ Username                             │  │
+│  │ [___________________]                │  │
+│  └───────────────────────────────────────┘  │
+│                                             │
+│  ┌───────────────────────────────────────┐  │
+│  │ Password                             │  │
+│  │ [___________________]                │  │
+│  └───────────────────────────────────────┘  │
+│                                             │
+│  ┌───────────────────────────────────────┐  │
+│  │               LOGIN                  │  │
+│  └───────────────────────────────────────┘  │
+└─────────────────────────────────────────────┘
+```
+
+**Kredensial contoh** (mengambil username dari ID karyawan pada tabel `employees` di `db_hr_backup.sql`):
+
+| Level | Username | Password |
+|-------|----------|----------|
+| Admin | `SKING` (ID 100) | `admin123` |
+| Karyawan | `NKOCHHAR` (ID 101) | `karyawan123` |
+
+> Catatan: Kredensial di atas hanyalah **contoh** untuk keperluan pengembangan/prototype. Password sebenarnya diatur pada modul **Pengaturan → Ganti Password** (lihat `Menu.md`).
+
+---
+
 ## 🚀 Menjalankan Database
 
 Import backup SQL ke PostgreSQL:
