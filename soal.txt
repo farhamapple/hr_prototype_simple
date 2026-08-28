@@ -1,0 +1,69 @@
+SOAL SQL - DATABASE DB_HR
+
+========================================
+LEVEL BASIC (20 Soal)
+========================================
+
+1. Tampilkan semua data dari tabel employees
+
+2. Tampilkan first_name, last_name, dan salary dari tabel employees
+
+3. Tampilkan karyawan dengan gaji di atas 10000
+
+4. Tampilkan karyawan yang dipekerjakan sebelum tahun 2005
+
+5. Tampilkan semua nama departemen dari tabel departments
+
+6. Tampilkan nama karyawan yang nama depannya berawalan huruf 'J'
+
+7. Tampilkan karyawan yang tidak memiliki komisi (NULL)
+
+8. Tampilkan nama karyawan yang bekerja di departemen 50 (Shipping)
+
+9. Tampilkan semua nama job dari tabel jobs
+
+10. Tampilkan karyawan berdasarkan gaji dari yang terendah
+
+11. Tampilkan 5 karyawan dengan gaji tertinggi
+
+12. Tampilkan nama karyawan beserta nama departemennya
+
+13. Tampilkan semua negara beserta nama wilayahnya
+
+14. Tampilkan nama karyawan beserta nama atasannya (manager)
+
+15. Tampilkan nama karyawan, nama departemen, dan kota tempat kantor
+
+16. Tampilkan karyawan dengan gaji antara 5000 dan 10000
+
+17. Tampilkan karyawan yang bekerja sebagai job_id 'SA_MAN' atau 'SA_REP'
+
+18. Tampilkan nama karyawan yang memiliki kata 'son' di nama belakang
+
+19. Tampilkan lokasi kota (city) dari tabel locations
+
+20. Tampilkan nama departemen beserta nama lokasi kota kantornya
+
+========================================
+LEVEL MENENGAH - GROUP BY (10 Soal)
+========================================
+
+21. Hitung jumlah karyawan di setiap departemen
+
+22. Hitung rata-rata gaji di setiap departemen
+
+23. Hitung total gaji di setiap departemen
+
+24. Tampilkan gaji tertinggi di setiap departemen
+
+25. Tampilkan gaji terendah di setiap departemen
+
+26. Hitung jumlah karyawan berdasarkan job_id
+
+27. Tampilkan departemen yang jumlah karyawannya lebih dari 5 orang
+
+28. Hitung rata-rata gaji per job_id, tampilkan yang rata-ratanya di atas 8000
+
+29. Hitung jumlah karyawan di setiap wilayah (region)
+
+30. Tampilkan nama departemen beserta jumlah karyawannya
