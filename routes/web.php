@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -24,4 +25,10 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware('auth')->name('dashboard');
+    ->middleware('auth')
+    ->name('dashboard');
+
+// Menampilkan daftar data karyawan.
+Route::get('/employees', [EmployeeController::class, 'index'])
+    ->middleware('auth')
+    ->name('employees.index');
