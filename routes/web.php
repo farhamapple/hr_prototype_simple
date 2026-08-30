@@ -24,11 +24,11 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware('auth')
-    ->name('dashboard');
+Route::middleware('auth')->group(function () {
+    // Dashboard utama setelah user berhasil login.
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
-// Menampilkan daftar data karyawan.
-Route::get('/employees', [EmployeeController::class, 'index'])
-    ->middleware('auth')
-    ->name('employees.index');
+    // Resource route membuat route index, create, store, show, edit, update, dan destroy.
+    Route::resource('employees', EmployeeController::class);
+});
