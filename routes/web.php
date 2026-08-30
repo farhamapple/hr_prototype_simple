@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepartmentController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -25,3 +27,10 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware('auth')->name('dashboard');
+
+Route::prefix('departments')->group(function () {
+    Route::get('/', [DepartmentController::class, 'index'])->name('departments.index');
+    Route::post('/', [DepartmentController::class, 'store'])->name('departments.store');
+    Route::put('/{id}', [DepartmentController::class, 'update'])->name('departments.update');
+    Route::delete('/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+});
