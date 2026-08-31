@@ -7,10 +7,8 @@ use Illuminate\Support\Facades\DB;
 
 class DepartmentController extends Controller
 {
-    // READ: Menampilkan data dengan JOIN ke employees dan locations
     public function index()
     {
-        // Pastikan d.manager_id dan d.location_id juga ditarik agar bisa dipakai di form modal Edit
         $departments = DB::select("
             SELECT 
                 d.department_id,
@@ -25,21 +23,32 @@ class DepartmentController extends Controller
             ORDER BY d.department_id ASC
         ");
 
-        return view('departments.index', compact('departments'));
+        $managers = DB::select("
+            SELECT employee_id, CONCAT(first_name, ' ', last_name) AS full_name 
+            FROM employees 
+            ORDER BY first_name ASC
+        ");
+
+        $locations = DB::select("
+            SELECT location_id, city 
+            FROM locations 
+            ORDER BY city ASC
+        ");
+
+        return view('departments.index', compact('departments', 'managers', 'locations'));
     }
 
-    // CREATE: Insert data departemen baru via Raw SQL
     public function store(Request $request)
     {
         $request->validate([
             'department_name' => 'required|string|max:255',
-            'manager_id'      => 'nullable|integer',
-            'location_id'     => 'nullable|integer',
+            'manager_id'      => 'nullable|exists:employees,employee_id',
+            'location_id'     => 'nullable|exists:locations,location_id',
         ]);
 
         DB::insert("
-            INSERT INTO departments (department_name, manager_id, location_id, created_at, updated_at) 
-            VALUES (?, ?, ?, NOW(), NOW())
+            INSERT INTO departments (department_name, manager_id, location_id) 
+            VALUES (?, ?, ?)
         ", [
             $request->department_name,
             $request->manager_id ?: null,
@@ -49,18 +58,18 @@ class DepartmentController extends Controller
         return redirect()->back()->with('success', 'Departemen berhasil ditambahkan!');
     }
 
-    // UPDATE: Update data departemen via Raw SQL
+
     public function update(Request $request, $id)
     {
         $request->validate([
             'department_name' => 'required|string|max:255',
-            'manager_id'      => 'nullable|integer',
-            'location_id'     => 'nullable|integer',
+            'manager_id'      => 'nullable|exists:employees,employee_id',
+            'location_id'     => 'nullable|exists:locations,location_id',
         ]);
 
         DB::update("
             UPDATE departments 
-            SET department_name = ?, manager_id = ?, location_id = ?, updated_at = NOW() 
+            SET department_name = ?, manager_id = ?, location_id = ? 
             WHERE department_id = ?
         ", [
             $request->department_name,
@@ -72,7 +81,7 @@ class DepartmentController extends Controller
         return redirect()->back()->with('success', 'Departemen berhasil diperbarui!');
     }
 
-    // DELETE: Hapus data departemen via Raw SQL
+    
     public function destroy($id)
     {
         DB::delete("DELETE FROM departments WHERE department_id = ?", [$id]);
