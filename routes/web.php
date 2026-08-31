@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\JobController; 
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -41,3 +42,7 @@ Route::resource('employees', EmployeeController::class)
 
 Route::resource('locations', LocationController::class)
 ->middleware('auth');
+
+Route::resource('/jobs', JobController::class)
+->middleware('auth');
+

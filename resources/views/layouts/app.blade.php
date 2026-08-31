@@ -86,7 +86,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{ route('jobs.index') }}" class="nav-link">
                                 <i class="nav-icon fa-solid fa-briefcase"></i>
                                 <p>Data Pekerjaan</p>
                             </a>
