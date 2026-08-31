@@ -2,8 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\LocationController;
+use App\Http\Controllers\JobController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,14 +24,9 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-Route::middleware('auth')->group(function () {
-    // Dashboard utama setelah user berhasil login.
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+->middleware('auth')->name('dashboard');
 
-    // CRUD Data Karyawan.
-    Route::resource('employees', EmployeeController::class);
+Route::resource('/jobs', JobController::class)
+->middleware('auth');
 
-    // CRUD Data Lokasi.
-    Route::resource('locations', LocationController::class);
-});
