@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class CountryController extends Controller
 {
-    // READ: Tampil data negara + Join ke tabel regions
+    
     public function index()
     {
         $countries = DB::select("
@@ -20,14 +20,14 @@ class CountryController extends Controller
         return view('countries.index', compact('countries'));
     }
 
-    // CREATE: Form Tambah Data
+    
     public function create()
     {
         $regions = DB::select("SELECT region_id, region_name FROM regions ORDER BY region_name ASC");
         return view('countries.create', compact('regions'));
     }
 
-    // STORE: Simpan Data Baru
+    
     public function store(Request $request)
     {
         $request->validate([
@@ -44,7 +44,6 @@ class CountryController extends Controller
         return redirect()->route('countries.index')->with('success', 'Negara berhasil ditambahkan!');
     }
 
-    // EDIT: Form Edit Data
     public function edit($id)
     {
         $country = DB::selectOne("SELECT * FROM countries WHERE country_id = ?", [$id]);
@@ -53,7 +52,7 @@ class CountryController extends Controller
         return view('countries.edit', compact('country', 'regions'));
     }
 
-    // UPDATE: Simpan Perubahan Data
+    
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -70,7 +69,7 @@ class CountryController extends Controller
         return redirect()->route('countries.index')->with('success', 'Negara berhasil diperbarui!');
     }
 
-    // DELETE: Hapus Data
+
     public function destroy($id)
     {
         DB::delete("DELETE FROM countries WHERE country_id = ?", [$id]);

@@ -10,7 +10,7 @@
         
         <div class="mb-3">
             <label class="form-label">ID Negara</label>
-            <input type="text" class="form-control" value="{{ $country->country_id }}" disabled>
+            <input type="text" class="form-control" value="{{ $country->country_id }}" readonly>
             <small class="text-muted">*ID Negara tidak dapat diubah (Primary Key)</small>
         </div>
 
