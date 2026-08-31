@@ -17,7 +17,6 @@
             </div>
         @endif
 
-        <!-- Form Tambah Data Baru -->
         <form action="{{ route('departments.store') }}" method="POST" class="row g-3 mb-4">
             @csrf
             <div class="col-md-3">
@@ -44,7 +43,6 @@
             </div>
         </form>
 
-        <!-- Tabel Tampil Data -->
         <table class="table table-bordered table-striped align-middle">
             <thead class="table-dark">
                 <tr>
@@ -75,7 +73,6 @@
                             </form>
                         </div>
 
-                        <!-- Modal Edit Data -->
                         <div class="modal fade" id="editModal{{ $dept->department_id }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
