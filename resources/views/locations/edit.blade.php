@@ -29,8 +29,11 @@
                     </h3>
                 </div>
 
-                {{-- PUT digunakan untuk memperbarui record yang sudah ada. --}}
-                <form action="{{ route('locations.update', $location) }}" method="POST">
+                {{-- location_id dikirim sebagai parameter route karena data berasal dari raw query. --}}
+                <form
+                    action="{{ route('locations.update', $location->location_id) }}"
+                    method="POST"
+                >
                     @csrf
                     @method('PUT')
 

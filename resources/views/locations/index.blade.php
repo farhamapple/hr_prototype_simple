@@ -24,7 +24,7 @@
     <div class="app-content">
         <div class="container-fluid">
 
-            {{-- Feedback setelah proses create, update, atau delete. --}}
+            {{-- Feedback setelah proses CRUD. --}}
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <i class="fa-solid fa-circle-check me-2"></i>
@@ -54,7 +54,7 @@
                 </div>
 
                 <div class="card-body">
-                    {{-- GET dipakai agar parameter search/filter tetap terlihat di URL. --}}
+                    {{-- Search dan filter dikirim menggunakan query string GET. --}}
                     <form action="{{ route('locations.index') }}" method="GET" class="row g-2 mb-3">
                         <div class="col-md-5">
                             <div class="input-group">
@@ -124,8 +124,8 @@
                                         <td>{{ $location->state_province ?: '-' }}</td>
                                         <td>{{ $location->postal_code ?: '-' }}</td>
                                         <td>
-                                            @if ($location->country)
-                                                {{ $location->country->country_name }}
+                                            @if ($location->country_name)
+                                                {{ $location->country_name }}
                                                 <small class="text-body-secondary">
                                                     ({{ $location->country_id }})
                                                 </small>
@@ -137,7 +137,7 @@
                                         <td class="text-center">
                                             <div class="btn-group btn-group-sm">
                                                 <a
-                                                    href="{{ route('locations.show', $location) }}"
+                                                    href="{{ route('locations.show', $location->location_id) }}"
                                                     class="btn btn-outline-info"
                                                     title="Detail"
                                                 >
@@ -145,7 +145,7 @@
                                                 </a>
 
                                                 <a
-                                                    href="{{ route('locations.edit', $location) }}"
+                                                    href="{{ route('locations.edit', $location->location_id) }}"
                                                     class="btn btn-outline-warning"
                                                     title="Edit"
                                                 >
@@ -153,7 +153,7 @@
                                                 </a>
 
                                                 <form
-                                                    action="{{ route('locations.destroy', $location) }}"
+                                                    action="{{ route('locations.destroy', $location->location_id) }}"
                                                     method="POST"
                                                     onsubmit="return confirm('Hapus lokasi ini?')"
                                                 >
@@ -184,8 +184,8 @@
                 </div>
 
                 @if ($locations->hasPages())
-                    <div class="card-footer">
-                        {{ $locations->links() }}
+                    <div class="card-footer d-flex justify-content-center">
+                        {{ $locations->onEachSide(1)->links() }}
                     </div>
                 @endif
             </div>

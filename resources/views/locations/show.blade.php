@@ -54,8 +54,8 @@
                         <div class="col-md-6">
                             <strong>Negara</strong>
                             <div>
-                                @if ($location->country)
-                                    {{ $location->country->country_name }}
+                                @if ($location->country_name)
+                                    {{ $location->country_name }}
                                     ({{ $location->country_id }})
                                 @else
                                     -
@@ -65,13 +65,16 @@
 
                         <div class="col-md-6">
                             <strong>Wilayah</strong>
-                            <div>{{ $location->country?->region?->region_name ?? '-' }}</div>
+                            <div>{{ $location->region_name ?: '-' }}</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="card-footer">
-                    <a href="{{ route('locations.edit', $location) }}" class="btn btn-warning">
+                    <a
+                        href="{{ route('locations.edit', $location->location_id) }}"
+                        class="btn btn-warning"
+                    >
                         <i class="fa-solid fa-pen-to-square me-1"></i>
                         Edit
                     </a>
@@ -82,7 +85,7 @@
                 </div>
             </div>
 
-            {{-- Menampilkan departemen yang menggunakan location_id ini. --}}
+            {{-- Data departemen berasal dari raw SELECT pada LocationController@show. --}}
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Departemen pada Lokasi Ini</h3>
@@ -98,7 +101,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($location->departments as $department)
+                                @forelse ($departments as $department)
                                     <tr>
                                         <td>{{ $department->department_id }}</td>
                                         <td>{{ $department->department_name }}</td>

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Country;
-use App\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class LocationController extends Controller
 {
@@ -13,29 +13,93 @@ class LocationController extends Controller
      */
     public function index(Request $request)
     {
-        // Mengambil lokasi sekaligus relasi country agar nama negara dapat ditampilkan.
-        $locations = Location::with('country')
-            ->when($request->filled('search'), function ($query) use ($request) {
-                // Search alamat, kota, provinsi, atau kode pos tanpa membedakan kapital.
-                $search = $request->string('search')->trim()->value();
+        // Nilai search dan filter diambil dari query string.
+        $search = trim((string) $request->input('search', ''));
+        $countryId = trim((string) $request->input('country_id', ''));
 
-                $query->where(function ($query) use ($search) {
-                    $query->where('street_address', 'ILIKE', "%{$search}%")
-                        ->orWhere('city', 'ILIKE', "%{$search}%")
-                        ->orWhere('state_province', 'ILIKE', "%{$search}%")
-                        ->orWhere('postal_code', 'ILIKE', "%{$search}%");
-                });
-            })
-            ->when($request->filled('country_id'), function ($query) use ($request) {
-                // Filter data berdasarkan negara yang dipilih.
-                $query->where('country_id', $request->string('country_id')->value());
-            })
-            ->orderBy('location_id')
-            ->paginate(10)
-            ->withQueryString();
+        $conditions = [];
+        $bindings = [];
 
-        // Data negara digunakan untuk filter.
-        $countries = Country::orderBy('country_name')->get();
+        if ($search !== '') {
+            // ILIKE dipakai PostgreSQL untuk pencarian tanpa membedakan huruf besar/kecil.
+            $conditions[] = '(
+                l.street_address ILIKE ?
+                OR l.city ILIKE ?
+                OR l.state_province ILIKE ?
+                OR l.postal_code ILIKE ?
+            )';
+
+            $keyword = "%{$search}%";
+
+            array_push(
+                $bindings,
+                $keyword,
+                $keyword,
+                $keyword,
+                $keyword
+            );
+        }
+
+        if ($countryId !== '') {
+            // Parameter binding (?) menjaga nilai input tidak ditempel langsung ke SQL.
+            $conditions[] = 'l.country_id = ?';
+            $bindings[] = $countryId;
+        }
+
+        // WHERE hanya ditambahkan jika user memakai search atau filter.
+        $whereSql = $conditions
+            ? 'WHERE '.implode(' AND ', $conditions)
+            : '';
+
+        // Menghitung total data untuk kebutuhan pagination.
+        $total = DB::selectOne(
+            "SELECT COUNT(*) AS total
+             FROM locations l
+             {$whereSql}",
+            $bindings
+        )->total;
+
+        $perPage = 10;
+        $page = LengthAwarePaginator::resolveCurrentPage();
+        $offset = ($page - 1) * $perPage;
+
+        // Raw SELECT + LEFT JOIN dipakai agar nama negara dapat ditampilkan.
+        $locations = DB::select(
+            "SELECT
+                l.location_id,
+                l.street_address,
+                l.postal_code,
+                l.city,
+                l.state_province,
+                l.country_id,
+                c.country_name
+             FROM locations l
+             LEFT JOIN countries c
+                ON l.country_id = c.country_id
+             {$whereSql}
+             ORDER BY l.location_id
+             LIMIT ? OFFSET ?",
+            [...$bindings, $perPage, $offset]
+        );
+
+        // DB::select() menghasilkan array, sehingga paginator dibuat manual.
+        $locations = new LengthAwarePaginator(
+            $locations,
+            $total,
+            $perPage,
+            $page,
+            [
+                'path' => $request->url(),
+                'query' => $request->query(),
+            ]
+        );
+
+        // Dropdown negara juga diambil dengan raw query.
+        $countries = DB::select(
+            'SELECT country_id, country_name
+             FROM countries
+             ORDER BY country_name'
+        );
 
         return view('locations.index', compact('locations', 'countries'));
     }
@@ -45,8 +109,12 @@ class LocationController extends Controller
      */
     public function create()
     {
-        // Country menjadi pilihan foreign key pada form.
-        $countries = Country::orderBy('country_name')->get();
+        // Data country digunakan sebagai pilihan foreign key pada form.
+        $countries = DB::select(
+            'SELECT country_id, country_name
+             FROM countries
+             ORDER BY country_name'
+        );
 
         return view('locations.create', compact('countries'));
     }
@@ -58,11 +126,32 @@ class LocationController extends Controller
     {
         $validated = $this->validateLocation($request);
 
-        // Pola ID pada data HR adalah 1000, 1100, 1200, dan seterusnya.
-        // Karena kolom tidak auto increment, ID baru dibuat dari ID terbesar + 100.
-        $validated['location_id'] = (Location::max('location_id') ?? 900) + 100;
+        // location_id tidak auto increment.
+        // Pola data existing bertambah 100: 1000, 1100, 1200, dan seterusnya.
+        $nextId = DB::selectOne(
+            'SELECT COALESCE(MAX(location_id), 900) + 100 AS next_id
+             FROM locations'
+        )->next_id;
 
-        Location::create($validated);
+        // INSERT ditulis langsung dengan raw query dan parameter binding.
+        DB::insert(
+            'INSERT INTO locations (
+                location_id,
+                street_address,
+                postal_code,
+                city,
+                state_province,
+                country_id
+             ) VALUES (?, ?, ?, ?, ?, ?)',
+            [
+                $nextId,
+                $validated['street_address'] ?? null,
+                $validated['postal_code'] ?? null,
+                $validated['city'],
+                $validated['state_province'] ?? null,
+                $validated['country_id'] ?? null,
+            ]
+        );
 
         return redirect()
             ->route('locations.index')
@@ -72,32 +161,106 @@ class LocationController extends Controller
     /**
      * Menampilkan detail lokasi.
      */
-    public function show(Location $location)
+    public function show(int $location)
     {
-        // departments ikut dimuat untuk melihat penggunaan lokasi pada organisasi.
-        $location->load(['country.region', 'departments']);
+        // JOIN countries dan regions dipakai untuk menampilkan informasi relasi.
+        $locationData = DB::selectOne(
+            'SELECT
+                l.location_id,
+                l.street_address,
+                l.postal_code,
+                l.city,
+                l.state_province,
+                l.country_id,
+                c.country_name,
+                r.region_name
+             FROM locations l
+             LEFT JOIN countries c
+                ON l.country_id = c.country_id
+             LEFT JOIN regions r
+                ON c.region_id = r.region_id
+             WHERE l.location_id = ?',
+            [$location]
+        );
 
-        return view('locations.show', compact('location'));
+        abort_if(!$locationData, 404);
+
+        // Menampilkan departemen yang menggunakan location_id ini.
+        $departments = DB::select(
+            'SELECT department_id, department_name
+             FROM departments
+             WHERE location_id = ?
+             ORDER BY department_id',
+            [$location]
+        );
+
+        return view('locations.show', [
+            'location' => $locationData,
+            'departments' => $departments,
+        ]);
     }
 
     /**
      * Menampilkan form edit lokasi.
      */
-    public function edit(Location $location)
+    public function edit(int $location)
     {
-        $countries = Country::orderBy('country_name')->get();
+        // Data lokasi yang akan diedit diambil berdasarkan primary key.
+        $locationData = DB::selectOne(
+            'SELECT
+                location_id,
+                street_address,
+                postal_code,
+                city,
+                state_province,
+                country_id
+             FROM locations
+             WHERE location_id = ?',
+            [$location]
+        );
 
-        return view('locations.edit', compact('location', 'countries'));
+        abort_if(!$locationData, 404);
+
+        $countries = DB::select(
+            'SELECT country_id, country_name
+             FROM countries
+             ORDER BY country_name'
+        );
+
+        return view('locations.edit', [
+            'location' => $locationData,
+            'countries' => $countries,
+        ]);
     }
 
     /**
      * Memperbarui data lokasi.
      */
-    public function update(Request $request, Location $location)
+    public function update(Request $request, int $location)
     {
         $validated = $this->validateLocation($request);
 
-        $location->update($validated);
+        // UPDATE dilakukan langsung ke tabel locations.
+        $affected = DB::update(
+            'UPDATE locations
+             SET
+                street_address = ?,
+                postal_code = ?,
+                city = ?,
+                state_province = ?,
+                country_id = ?
+             WHERE location_id = ?',
+            [
+                $validated['street_address'] ?? null,
+                $validated['postal_code'] ?? null,
+                $validated['city'],
+                $validated['state_province'] ?? null,
+                $validated['country_id'] ?? null,
+                $location,
+            ]
+        );
+
+        abort_if($affected === 0 && !$this->locationExists($location), 404);
 
         return redirect()
             ->route('locations.index')
@@ -107,16 +270,33 @@ class LocationController extends Controller
     /**
      * Menghapus lokasi jika tidak sedang digunakan departemen.
      */
-    public function destroy(Location $location)
+    public function destroy(int $location)
     {
-        // Foreign key departments.location_id mencegah lokasi yang masih dipakai dihapus.
-        if ($location->departments()->exists()) {
+        abort_unless($this->locationExists($location), 404);
+
+        // Cek relasi lebih dulu agar DELETE tidak melanggar foreign key.
+        $departmentCount = DB::selectOne(
+            'SELECT COUNT(*) AS total
+             FROM departments
+             WHERE location_id = ?',
+            [$location]
+        )->total;
+
+        if ($departmentCount > 0) {
             return redirect()
                 ->route('locations.index')
-                ->with('error', 'Lokasi tidak dapat dihapus karena masih digunakan oleh departemen.');
+                ->with(
+                    'error',
+                    'Lokasi tidak dapat dihapus karena masih digunakan oleh departemen.'
+                );
         }
 
-        $location->delete();
+        // DELETE dilakukan menggunakan primary key location_id.
+        DB::delete(
+            'DELETE FROM locations
+             WHERE location_id = ?',
+            [$location]
+        );
 
         return redirect()
             ->route('locations.index')
@@ -124,8 +304,22 @@ class LocationController extends Controller
     }
 
     /**
-     * Aturan validasi dipakai bersama oleh store() dan update()
-     * supaya tidak ada duplikasi rule.
+     * Mengecek keberadaan lokasi dengan raw query.
+     */
+    private function locationExists(int $locationId): bool
+    {
+        return DB::selectOne(
+            'SELECT EXISTS(
+                SELECT 1
+                FROM locations
+                WHERE location_id = ?
+             ) AS exists',
+            [$locationId]
+        )->exists;
+    }
+
+    /**
+     * Validasi input dipakai bersama oleh store() dan update().
      */
     private function validateLocation(Request $request): array
     {
