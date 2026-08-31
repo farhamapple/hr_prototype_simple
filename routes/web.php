@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LocationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,6 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    // Resource route membuat route index, create, store, show, edit, update, dan destroy.
+    // CRUD Data Karyawan.
     Route::resource('employees', EmployeeController::class);
+
+    // CRUD Data Lokasi.
+    Route::resource('locations', LocationController::class);
 });
