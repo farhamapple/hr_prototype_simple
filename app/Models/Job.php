@@ -19,4 +19,11 @@ class Job extends Model
     {
         return $this->hasMany(Employee::class, 'job_id');
     }
+
+    protected $fillable = [
+        'job_id',
+        'job_title',
+        'min_salary',
+        'max_salary',
+    ];
 }

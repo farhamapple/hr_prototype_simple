@@ -18,4 +18,9 @@ class Region extends Model
     {
         return $this->hasMany(Country::class, 'region_id');
     }
+
+    protected $fillable = [
+        'region_id',
+        'region_name',
+    ];
 }
