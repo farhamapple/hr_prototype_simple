@@ -26,7 +26,7 @@
                 </div>
 
                 {{-- PUT digunakan untuk memperbarui employee yang sudah ada. --}}
-                <form action="{{ route('employees.update', $employee) }}" method="POST">
+                <form action="{{ route('employees.update', $employee->employee_id) }}" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -125,7 +125,7 @@
                         <button type="submit" class="btn btn-primary">
                             <i class="fa-solid fa-floppy-disk me-1"></i> Simpan Perubahan
                         </button>
-                        <a href="{{ route('employees.show', $employee) }}" class="btn btn-secondary">Batal</a>
+                        <a href="{{ route('employees.show', $employee->employee_id) }}" class="btn btn-secondary">Batal</a>
                     </div>
                 </form>
             </div>
