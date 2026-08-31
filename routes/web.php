@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -33,4 +34,12 @@ Route::prefix('departments')->group(function () {
     Route::post('/', [DepartmentController::class, 'store'])->name('departments.store');
     Route::put('/{id}', [DepartmentController::class, 'update'])->name('departments.update');
     Route::delete('/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
+});
+Route::middleware('auth')->group(function () {
+    // Dashboard utama setelah user berhasil login.
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // Resource route membuat route index, create, store, show, edit, update, dan destroy.
+    Route::resource('employees', EmployeeController::class);
 });
