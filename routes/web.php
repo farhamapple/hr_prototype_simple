@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LocationController;
@@ -27,7 +28,10 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
-->middleware('auth')->name('dashboard');
+    ->middleware('auth')->name('dashboard');
+    
+Route::resource('countries', CountryController::class)
+->middleware('auth');
 
 Route::resource('/regions', RegionController::class)
 ->middleware('auth');
