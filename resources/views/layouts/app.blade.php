@@ -69,7 +69,10 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a
+                                href="{{ route('employees.index') }}"
+                                class="nav-link {{ request()->routeIs('employees.*') ? 'active' : '' }}"
+                            >
                                 <i class="nav-icon fa-solid fa-users"></i>
                                 <p>Data Karyawan</p>
                             </a>

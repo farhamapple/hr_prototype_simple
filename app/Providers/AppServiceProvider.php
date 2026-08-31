@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Project memakai Bootstrap/AdminLTE, jadi pagination Laravel
-        // juga menggunakan template Bootstrap 5.
+        // menggunakan template Bootstrap 5.
         Paginator::useBootstrapFive();
     }
 }
