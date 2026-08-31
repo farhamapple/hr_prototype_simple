@@ -31,5 +31,3 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::resource('/jobs', JobController::class)
 ->middleware('auth');
 
-Route::resource('/regions', RegionController::class)
-->middleware('auth');
