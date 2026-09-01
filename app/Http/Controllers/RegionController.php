@@ -103,6 +103,16 @@ class RegionController extends Controller
     public function destroy($id)
     {
 
+        $connectedDataRegion = DB::table('countries')
+        ->where('region_id', $id)
+        ->exists();
+        
+        if ($connectedDataRegion) {
+            return redirect()
+                ->route('regions.index')
+                ->with('warning', 'Wilayah tidak bisa dihapus karena masih ada data yang terhubung! Hapus data yang terkait terlebih dahulu di daftar negara.');
+        }
+
         // $region->delete();
         DB::delete('delete from regions where region_id = ?', [$id]);
 
