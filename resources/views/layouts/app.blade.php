@@ -86,25 +86,20 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('jobs.index') }}" class="nav-link {{ request()->routeIs('jobs') ? 'active' : '' }}"">
+                            <a href="{{ route('jobs.index') }}" class="nav-link">
                                 <i class="nav-icon fa-solid fa-briefcase"></i>
                                 <p>Data Pekerjaan</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a
+                                href="{{ route('job-history.index') }}"
+                                class="nav-link {{ request()->routeIs('job-history.*') ? 'active' : '' }}"
+                            >
                                 <i class="nav-icon fa-solid fa-clock-rotate-left"></i>
-                                <p>
-                                    Riwayat Pekerjaan
-                                    <i class="nav-arrow fa-solid fa-chevron-right"></i>
-                                </p>
+                                <p>Riwayat Pekerjaan</p>
                             </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="#" class="nav-link"><p>Daftar Riwayat</p></a></li>
-                                <li class="nav-item"><a href="#" class="nav-link"><p>Riwayat per Karyawan</p></a></li>
-                                <li class="nav-item"><a href="#" class="nav-link"><p>Riwayat per Departemen</p></a></li>
-                            </ul>
                         </li>
 
                         <li class="nav-item {{ request()->routeIs('locations.*') ? 'menu-open' : '' }}">
@@ -126,11 +121,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item"><a href="#" class="nav-link"><p>Daftar Negara</p></a></li>
-                                <li class="nav-item">
-                                    <a href="{{ route('regions.index') }}" class="nav-link {{ request()->routeIs('regions.*') ? 'active' : '' }}">
-                                        <p>Daftar Wilayah</p>
-                                    </a>
-                                </li>
+                                <li class="nav-item"><a href="#" class="nav-link"><p>Daftar Wilayah</p></a></li>
                             </ul>
                         </li>
 
