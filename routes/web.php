@@ -1,8 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\JobController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\RegionController;
+use App\Http\Controllers\JobController; 
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,7 +29,19 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
-->middleware('auth')->name('dashboard');
+    ->middleware('auth')->name('dashboard');
+    
+Route::resource('countries', CountryController::class)
+->middleware('auth');
+
+Route::resource('/regions', RegionController::class)
+->middleware('auth');
+
+Route::resource('employees', EmployeeController::class)
+->middleware('auth');
+
+Route::resource('locations', LocationController::class)
+->middleware('auth');
 
 Route::resource('/jobs', JobController::class)
 ->middleware('auth');

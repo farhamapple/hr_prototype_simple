@@ -69,8 +69,15 @@ class JobController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Job $job)
+    public function show($id)
     {
+        $jobResults = DB::select('SELECT * FROM jobs WHERE job_id = ?', [$id]);
+       // dd($jobResults);
+        if (empty($jobResults)) {
+            abort(404);
+        }
+
+        $job = $jobResults[0];
         return view('jobs.jobs-show', compact('job'));
     }
 
@@ -153,6 +160,9 @@ class JobController extends Controller
 
         // $job->delete();
         DB::delete('delete from jobs where job_id = ?', [$id]);
+
+        // Cek dulu ada Data-nya gak yang terkoneksi?
+        // Jika ada, maka hapus dulu data yang terkoneksi dengan job_id ini
     
         return redirect()
             ->route('jobs.index')
