@@ -103,9 +103,10 @@ class RegionController extends Controller
     public function destroy($id)
     {
 
-        $connectedDataRegion = DB::table('countries')
-        ->where('region_id', $id)
-        ->exists();
+        $connectedDataRegion = DB::select(
+            'select 1 from countries where region_id = ? limit 1',
+            [$id]
+        );
         
         if ($connectedDataRegion) {
             return redirect()
