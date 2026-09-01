@@ -147,6 +147,18 @@ class JobController extends Controller
      */
     public function destroy($id)
     {
+
+        $connectedDataJob = DB::select(
+            'select 1 from employees where job_id = ? limit 1',
+            [$id]
+        );
+        
+        if ($connectedDataJob) {
+            return redirect()
+                ->route('jobs.index')
+                ->with('warning', 'Pekerjaan tidak bisa dihapus karena masih ada data yang terhubung! Hapus data yang terkait terlebih dahulu di data karyawan.');
+        }
+
         // $job->delete();
         DB::delete('delete from jobs where job_id = ?', [$id]);
 
