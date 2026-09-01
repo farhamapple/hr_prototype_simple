@@ -45,4 +45,3 @@ Route::resource('locations', LocationController::class)
 
 Route::resource('/jobs', JobController::class)
 ->middleware('auth');
-
