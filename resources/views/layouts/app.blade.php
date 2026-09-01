@@ -86,9 +86,6 @@
                         </li>
 
                         <li class="nav-item">
-<<<<<<< Updated upstream
-                            <a href="#" class="nav-link">
-=======
                             <a href="{{ route('jobs.index') }}" class="nav-link {{ request()->routeIs('jobs') ? 'active' : '' }}">
                                 <i class="nav-icon fa-solid fa-briefcase"></i>
                                 <p>Data Pekerjaan</p>
