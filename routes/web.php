@@ -67,3 +67,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/job-history/{employeeId}', [JobHistoryController::class, 'show'])
         ->name('job-history.show');
 });
+
+});

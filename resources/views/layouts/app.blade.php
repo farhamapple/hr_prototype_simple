@@ -79,14 +79,17 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a
+                                href="{{ route('departments.index') }}"
+                                class="nav-link {{ request()->routeIs('departments.*') ? 'active' : '' }}"
+                            >
                                 <i class="nav-icon fa-solid fa-building"></i>
                                 <p>Data Departemen</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('jobs.index') }}" class="nav-link">
+                            <a href="{{ route('jobs.index') }}" class="nav-link {{ request()->routeIs('jobs.*') ? 'active' : '' }}">
                                 <i class="nav-icon fa-solid fa-briefcase"></i>
                                 <p>Data Pekerjaan</p>
                             </a>
@@ -102,8 +105,8 @@
                             </a>
                         </li>
 
-                        <li class="nav-item {{ request()->routeIs('locations.*') ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ request()->routeIs('locations.*') ? 'active' : '' }}">
+                        <li class="nav-item {{ request()->routeIs('locations.*', 'countries.*', 'regions.*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ request()->routeIs('locations.*', 'countries.*', 'regions.*') ? 'active' : '' }}">
                                 <i class="nav-icon fa-solid fa-location-dot"></i>
                                 <p>
                                     Lokasi & Wilayah
@@ -120,8 +123,24 @@
                                         <p>Daftar Lokasi</p>
                                     </a>
                                 </li>
-                                <li class="nav-item"><a href="#" class="nav-link"><p>Daftar Negara</p></a></li>
-                                <li class="nav-item"><a href="#" class="nav-link"><p>Daftar Wilayah</p></a></li>
+                                <li class="nav-item">
+                                    <a
+                                        href="{{ route('countries.index') }}"
+                                        class="nav-link {{ request()->routeIs('countries.*') ? 'active' : '' }}"
+                                    >
+                                        <i class="nav-icon fa-regular fa-circle"></i>
+                                        <p>Daftar Negara</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a
+                                        href="{{ route('regions.index') }}"
+                                        class="nav-link {{ request()->routeIs('regions.*') ? 'active' : '' }}"
+                                    >
+                                        <i class="nav-icon fa-regular fa-circle"></i>
+                                        <p>Daftar Wilayah</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
@@ -142,23 +161,13 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fa-solid fa-gear"></i>
-                                <p>
-                                    Pengaturan
-                                    <i class="nav-arrow fa-solid fa-chevron-right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="#" class="nav-link"><p>Profil Admin</p></a></li>
-                                <li class="nav-item"><a href="#" class="nav-link"><p>Ganti Password</p></a></li>
-                                <li class="nav-item">
-                                    <form action="{{ route('logout') }}" method="post">
-                                        @csrf
-                                        <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start"><p>Logout</p></button>
-                                    </form>
-                                </li>
-                            </ul>
+                            <form action="{{ route('logout') }}" method="post">
+                                @csrf
+                                <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
+                                    <i class="nav-icon fa-solid fa-right-from-bracket"></i>
+                                    <p>Logout</p>
+                                </button>
+                            </form>
                         </li>
 
                     </ul>

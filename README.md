@@ -1,18 +1,22 @@
 # Sistem Manajemen HR (Prototype)
 
-Prototype sederhana untuk **Sistem Manajemen Human Resources (HR)** berbasis database `db_hr`. Proyek ini berisi perancangan antarmuka (wireframe), struktur database, dan latihan soal SQL.
+Prototype sederhana untuk **Sistem Manajemen Human Resources (HR)** berbasis Laravel + PostgreSQL. Proyek ini berisi perancangan antarmuka (wireframe), struktur database, CRUD modul, dan latihan soal SQL.
 
 ---
 
 ## 📂 Isi Proyek
 
-| File | Deskripsi |
+| File/Folder | Deskripsi |
 |------|-----------|
-| `prototype.md` | Visualisasi wireframe (ASCII) dari seluruh halaman sistem |
-| `Menu.md` | Rincian menu, sub menu, dan fungsi setiap modul |
-| `db_hr_backup.sql` | Backup/struktur database PostgreSQL `db_hr` |
-| `soal.txt` | Daftar soal latihan SQL (Basic & Menengah) |
-| `soal_jawaban.md` | Soal beserta jawaban SQL |
+| `app/Http/Controllers/` | Controller untuk setiap modul (Auth, Dashboard, Employee, dll) |
+| `database/migrations/` | Migrasi database Laravel |
+| `docs/prototype.md` | Visualisasi wireframe (ASCII) dari seluruh halaman sistem |
+| `docs/Menu.md` | Rincian menu, sub menu, dan fungsi setiap modul |
+| `docs/db_hr_backup.sql` | Backup/struktur database PostgreSQL `db_hr` |
+| `docs/soal.txt` | Daftar soal latihan SQL (Basic & Menengah) |
+| `docs/soal_jawaban.md` | Soal beserta jawaban SQL |
+| `routes/web.php` | Definisi route Laravel |
+| `resources/views/` | Blade template views |
 
 ---
 
@@ -43,7 +47,7 @@ Database berisi **7 tabel**:
 
 ## 🖥️ Modul & Halaman
 
-Berdasarkan `prototype.md` dan `Menu.md`, sistem memiliki **9 modul**:
+Berdasarkan `prototype.md` dan route Laravel, sistem memiliki **7 modul**:
 
 1. **Login** — autentikasi pengguna
 2. **Dashboard** — ringkasan jumlah karyawan & grafik distribusi
@@ -52,10 +56,8 @@ Berdasarkan `prototype.md` dan `Menu.md`, sistem memiliki **9 modul**:
 5. **Data Pekerjaan (Jobs)** — CRUD job title
 6. **Riwayat Pekerjaan** — histori perpindahan karyawan
 7. **Lokasi & Wilayah** — lokasi, negara, wilayah
-8. **Laporan** — karyawan per departemen, gaji, riwayat, lokasi
-9. **Pengaturan** — profil admin & ganti password
 
-Total **24 halaman** (terdiri dari berbagai sub menu tiap modul).
+Total **49 routes** terdaftar (resource routes untuk setiap modul).
 
 ---
 
@@ -97,29 +99,57 @@ Tampilan halaman login sesuai wireframe di `prototype.md`:
 └─────────────────────────────────────────────┘
 ```
 
-**Kredensial contoh** (mengambil username dari ID karyawan pada tabel `employees` di `db_hr_backup.sql`):
+**Kredensial login:**
 
 | Level | Username | Password |
 |-------|----------|----------|
-| Admin | `SKING` (ID 100) | `admin123` |
-| Karyawan | `NKOCHHAR` (ID 101) | `karyawan123` |
+| Admin | `admin@example.com` | `password` |
 
-> Catatan: Kredensial di atas hanyalah **contoh** untuk keperluan pengembangan/prototype. Password sebenarnya diatur pada modul **Pengaturan → Ganti Password** (lihat `Menu.md`).
+> Catatan: Password diatur pada modul **Pengaturan → Ganti Password** (lihat `Menu.md`).
 
 ---
 
-## 🚀 Menjalankan Database
+## 🚀 Menjalankan Aplikasi
 
-Import backup SQL ke PostgreSQL:
+### 1. Database Setup (PostgreSQL di Windows, WSL)
 
 ```bash
-createdb db_hr
-psql -d db_hr -f db_hr_backup.sql
+# Buat database baru
+PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -p 5432 -c "CREATE DATABASE db_hr;"
+
+# Restore dari backup
+PGPASSWORD=postgres psql -h 127.0.0.1 -U postgres -p 5432 -d db_hr -f docs/db_hr_backup.sql
 ```
+
+### 2. Konfigurasi .env
+
+Pastikan file `.env` sudah terkonfigurasi:
+
+```
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=db_hr
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+```
+
+### 3. Install Dependencies & Jalankan
+
+```bash
+composer install
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
+
+Aplikasi berjalan di `http://localhost:8000`.
 
 ---
 
 ## ⚙️ Teknologi
 
-- **Database:** PostgreSQL
-- **Desain:** Wireframe ASCII (belum implementasi kode aplikasi)
+- **Backend:** Laravel (PHP)
+- **Database:** PostgreSQL (running di Windows, diakses dari WSL via `127.0.0.1`)
+- **Template:** Blade
+- **Desain:** Wireframe ASCII (prototype) + implementasi Laravel
