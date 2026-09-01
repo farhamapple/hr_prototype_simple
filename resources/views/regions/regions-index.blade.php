@@ -27,6 +27,11 @@
                     <p class="fw-bold">{{ session('success') }}</p>
                 </div>
             @endif
+            @if(session('warning'))
+                <div class="alert alert-warning alert-dismissible fade show p-3 mb-1" role="alert">
+                    <p class="fw-bold">{{ session('warning') }}</p>
+                </div>
+            @endif
 
             <div class="card p-2 shadow-sm">
                 <div class="card-header border-bottom py-2 d-flex flex-row-reverse">

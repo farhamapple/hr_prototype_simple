@@ -126,7 +126,11 @@
                                     </a>
                                 </li>
                                 <li class="nav-item"><a href="#" class="nav-link"><p>Daftar Negara</p></a></li>
-                                <li class="nav-item"><a href="#" class="nav-link"><p>Daftar Wilayah</p></a></li>
+                                <li class="nav-item">
+                                    <a href="{{ route('regions.index') }}" class="nav-link {{ request()->routeIs('regions.*') ? 'active' : '' }}">
+                                        <p>Daftar Wilayah</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
