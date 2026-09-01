@@ -29,4 +29,3 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 
 Route::resource('/jobs', JobController::class)
 ->middleware('auth');
-
