@@ -86,7 +86,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('jobs.index') }}" class="nav-link">
+                            <a href="{{ route('jobs.index') }}" class="nav-link {{ request()->routeIs('jobs') ? 'active' : '' }}"">
                                 <i class="nav-icon fa-solid fa-briefcase"></i>
                                 <p>Data Pekerjaan</p>
                             </a>
@@ -126,7 +126,11 @@
                                     </a>
                                 </li>
                                 <li class="nav-item"><a href="#" class="nav-link"><p>Daftar Negara</p></a></li>
-                                <li class="nav-item"><a href="#" class="nav-link"><p>Daftar Wilayah</p></a></li>
+                                <li class="nav-item">
+                                    <a href="{{ route('regions.index') }}" class="nav-link {{ request()->routeIs('regions.*') ? 'active' : '' }}">
+                                        <p>Daftar Wilayah</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 

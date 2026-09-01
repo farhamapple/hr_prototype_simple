@@ -32,7 +32,6 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware('auth')->name('dashboard');
-<<<<<<< HEAD
 
 Route::prefix('departments')->group(function () {
     Route::get('/', [DepartmentController::class, 'index'])->name('departments.index');
@@ -44,7 +43,6 @@ Route::middleware('auth')->group(function () {
     // Dashboard utama setelah user berhasil login.
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
-=======
     
 Route::resource('countries', CountryController::class)
 ->middleware('auth');
@@ -60,5 +58,3 @@ Route::resource('locations', LocationController::class)
 
 Route::resource('/jobs', JobController::class)
 ->middleware('auth');
->>>>>>> c5ea7af78523104fea92c25a9a8bfc92c0f1c870
-
