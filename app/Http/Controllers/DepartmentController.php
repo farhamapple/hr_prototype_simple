@@ -46,15 +46,24 @@ class DepartmentController extends Controller
             'location_id'     => 'nullable|exists:locations,location_id',
         ]);
 
-        DB::insert("
-            INSERT INTO departments (department_name, manager_id, location_id) 
-            VALUES (?, ?, ?)
-        ", [
-            $request->department_name,
-            $request->manager_id ?: null,
-            $request->location_id ?: null
+        $maxId = DB::table('departments')->max('department_id') ?? 0;
+        $newId = $maxId + 10;
+        DB::table('departments')->insert([
+        'department_id'   => $newId,
+        'department_name' => $request->department_name,
+        'manager_id'      => $request->manager_id,
+        'location_id'     => $request->location_id,
         ]);
 
+        // DB::insert("
+        //     INSERT INTO departments (department_name, manager_id, location_id) 
+        //     VALUES (?, ?, ?)
+        // ", [
+        //     $request->department_name,
+        //     $request->manager_id ?: null,
+        //     $request->location_id ?: null
+        // ]);
+        
         return redirect()->back()->with('success', 'Departemen berhasil ditambahkan!');
     }
 
