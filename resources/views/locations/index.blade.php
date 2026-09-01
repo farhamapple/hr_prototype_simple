@@ -1,18 +1,20 @@
 @extends('layouts.app')
 
-@section('title', 'Data Karyawan')
+@section('title', 'Data Lokasi')
 
 @section('content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Data Karyawan</h3>
+                    <h3 class="mb-0">Data Lokasi</h3>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                        <li class="breadcrumb-item active">Data Karyawan</li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('dashboard') }}">Home</a>
+                        </li>
+                        <li class="breadcrumb-item active">Data Lokasi</li>
                     </ol>
                 </div>
             </div>
@@ -21,16 +23,20 @@
 
     <div class="app-content">
         <div class="container-fluid">
+
+            {{-- Feedback setelah proses CRUD. --}}
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fa-solid fa-circle-check me-2"></i>{{ session('success') }}
+                    <i class="fa-solid fa-circle-check me-2"></i>
+                    {{ session('success') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
 
             @if (session('error'))
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fa-solid fa-circle-exclamation me-2"></i>{{ session('error') }}
+                    <i class="fa-solid fa-circle-exclamation me-2"></i>
+                    {{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
@@ -38,17 +44,18 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-                        <h3 class="card-title mb-0">Daftar Karyawan</h3>
+                        <h3 class="card-title mb-0">Daftar Lokasi</h3>
 
-                        <a href="{{ route('employees.create') }}" class="btn btn-primary">
-                            <i class="fa-solid fa-plus me-1"></i> Tambah Karyawan
+                        <a href="{{ route('locations.create') }}" class="btn btn-primary">
+                            <i class="fa-solid fa-plus me-1"></i>
+                            Tambah Lokasi
                         </a>
                     </div>
                 </div>
 
                 <div class="card-body">
-                    {{-- Search dan filter dikirim menggunakan GET agar parameter tetap terlihat di URL. --}}
-                    <form action="{{ route('employees.index') }}" method="GET" class="row g-2 mb-3">
+                    {{-- Search dan filter dikirim menggunakan query string GET. --}}
+                    <form action="{{ route('locations.index') }}" method="GET" class="row g-2 mb-3">
                         <div class="col-md-5">
                             <div class="input-group">
                                 <span class="input-group-text">
@@ -59,24 +66,24 @@
                                     name="search"
                                     value="{{ request('search') }}"
                                     class="form-control"
-                                    placeholder="Cari nama atau email..."
+                                    placeholder="Cari alamat, kota, provinsi..."
                                 >
                             </div>
                         </div>
 
                         <div class="col-md-4">
-                            <select name="department_id" class="form-select">
-                                <option value="">Semua Departemen</option>
+                            <select name="country_id" class="form-select">
+                                <option value="">Semua Negara</option>
 
-                                @foreach ($departments as $department)
+                                @foreach ($countries as $country)
                                     <option
-                                        value="{{ $department->department_id }}"
+                                        value="{{ $country->country_id }}"
                                         @selected(
-                                            (string) request('department_id')
-                                            === (string) $department->department_id
+                                            (string) request('country_id')
+                                            === (string) $country->country_id
                                         )
                                     >
-                                        {{ $department->department_name }}
+                                        {{ $country->country_name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -84,10 +91,11 @@
 
                         <div class="col-md-3 d-flex gap-2">
                             <button type="submit" class="btn btn-outline-primary">
-                                <i class="fa-solid fa-magnifying-glass me-1"></i> Cari
+                                <i class="fa-solid fa-magnifying-glass me-1"></i>
+                                Cari
                             </button>
 
-                            <a href="{{ route('employees.index') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('locations.index') }}" class="btn btn-outline-secondary">
                                 Reset
                             </a>
                         </div>
@@ -97,35 +105,39 @@
                         <table class="table table-bordered table-striped table-hover align-middle mb-0">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Nama</th>
-                                    <th>Job ID</th>
-                                    <th>Pekerjaan</th>
-                                    <th class="text-end">Gaji</th>
-                                    <th>Departemen</th>
-                                    <th class="text-center" style="width: 170px;">Aksi</th>
+                                    <th style="width: 90px;">ID</th>
+                                    <th>Alamat</th>
+                                    <th>Kota</th>
+                                    <th>Provinsi</th>
+                                    <th>Kode Pos</th>
+                                    <th>Negara</th>
+                                    <th class="text-center" style="width: 130px;">Aksi</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                @forelse ($employees as $employee)
+                                @forelse ($locations as $location)
                                     <tr>
-                                        <td>{{ $employee->employee_id }}</td>
+                                        <td>{{ $location->location_id }}</td>
+                                        <td>{{ $location->street_address ?: '-' }}</td>
+                                        <td>{{ $location->city }}</td>
+                                        <td>{{ $location->state_province ?: '-' }}</td>
+                                        <td>{{ $location->postal_code ?: '-' }}</td>
                                         <td>
-                                            <div class="fw-semibold">{{ $employee->full_name }}</div>
-                                            <small class="text-body-secondary">{{ $employee->email }}</small>
+                                            @if ($location->country_name)
+                                                {{ $location->country_name }}
+                                                <small class="text-body-secondary">
+                                                    ({{ $location->country_id }})
+                                                </small>
+                                            @else
+                                                -
+                                            @endif
                                         </td>
-                                        <td>{{ $employee->job_id }}</td>
-                                        <td>{{ $employee->job_title ?? '-' }}</td>
-                                        <td class="text-end">
-                                            {{ $employee->salary !== null ? number_format((float) $employee->salary, 2) : '-' }}
-                                        </td>
-                                        <td>{{ $employee->department_name ?? '-' }}</td>
 
                                         <td class="text-center">
-                                            <div class="btn-group btn-group-sm" role="group">
+                                            <div class="btn-group btn-group-sm">
                                                 <a
-                                                    href="{{ route('employees.show', $employee->employee_id) }}"
+                                                    href="{{ route('locations.show', $location->location_id) }}"
                                                     class="btn btn-outline-info"
                                                     title="Detail"
                                                 >
@@ -133,7 +145,7 @@
                                                 </a>
 
                                                 <a
-                                                    href="{{ route('employees.edit', $employee->employee_id) }}"
+                                                    href="{{ route('locations.edit', $location->location_id) }}"
                                                     class="btn btn-outline-warning"
                                                     title="Edit"
                                                 >
@@ -141,10 +153,9 @@
                                                 </a>
 
                                                 <form
-                                                    action="{{ route('employees.destroy', $employee->employee_id) }}"
+                                                    action="{{ route('locations.destroy', $location->location_id) }}"
                                                     method="POST"
-                                                    class="d-inline"
-                                                    onsubmit="return confirm('Hapus data karyawan ini?')"
+                                                    onsubmit="return confirm('Hapus lokasi ini?')"
                                                 >
                                                     @csrf
                                                     @method('DELETE')
@@ -163,7 +174,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="7" class="text-center py-4 text-body-secondary">
-                                            Data karyawan tidak ditemukan.
+                                            Data lokasi tidak ditemukan.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -172,9 +183,9 @@
                     </div>
                 </div>
 
-                @if ($employees->hasPages())
+                @if ($locations->hasPages())
                     <div class="card-footer d-flex justify-content-center">
-                        {{ $employees->onEachSide(1)->links() }}
+                        {{ $locations->onEachSide(1)->links() }}
                     </div>
                 @endif
             </div>

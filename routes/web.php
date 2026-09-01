@@ -1,9 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\RegionController;
+use App\Http\Controllers\JobController; 
 use Illuminate\Support\Facades\Route;
 
 
@@ -28,6 +32,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware('auth')->name('dashboard');
+<<<<<<< HEAD
 
 Route::prefix('departments')->group(function () {
     Route::get('/', [DepartmentController::class, 'index'])->name('departments.index');
@@ -39,7 +44,21 @@ Route::middleware('auth')->group(function () {
     // Dashboard utama setelah user berhasil login.
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+=======
+    
+Route::resource('countries', CountryController::class)
+->middleware('auth');
 
-    // Resource route membuat route index, create, store, show, edit, update, dan destroy.
-    Route::resource('employees', EmployeeController::class);
-});
+Route::resource('/regions', RegionController::class)
+->middleware('auth');
+
+Route::resource('employees', EmployeeController::class)
+->middleware('auth');
+
+Route::resource('locations', LocationController::class)
+->middleware('auth');
+
+Route::resource('/jobs', JobController::class)
+->middleware('auth');
+>>>>>>> c5ea7af78523104fea92c25a9a8bfc92c0f1c870
+

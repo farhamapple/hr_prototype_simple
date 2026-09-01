@@ -86,7 +86,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{ route('jobs.index') }}" class="nav-link">
                                 <i class="nav-icon fa-solid fa-briefcase"></i>
                                 <p>Data Pekerjaan</p>
                             </a>
@@ -107,8 +107,8 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
+                        <li class="nav-item {{ request()->routeIs('locations.*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ request()->routeIs('locations.*') ? 'active' : '' }}">
                                 <i class="nav-icon fa-solid fa-location-dot"></i>
                                 <p>
                                     Lokasi & Wilayah
@@ -116,7 +116,15 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="#" class="nav-link"><p>Daftar Lokasi</p></a></li>
+                                <li class="nav-item">
+                                    <a
+                                        href="{{ route('locations.index') }}"
+                                        class="nav-link {{ request()->routeIs('locations.*') ? 'active' : '' }}"
+                                    >
+                                        <i class="nav-icon fa-regular fa-circle"></i>
+                                        <p>Daftar Lokasi</p>
+                                    </a>
+                                </li>
                                 <li class="nav-item"><a href="#" class="nav-link"><p>Daftar Negara</p></a></li>
                                 <li class="nav-item"><a href="#" class="nav-link"><p>Daftar Wilayah</p></a></li>
                             </ul>
