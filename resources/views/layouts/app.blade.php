@@ -153,7 +153,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item"><a href="#" class="nav-link"><p>Karyawan per Departemen</p></a></li>
+                                <li class="nav-item"><a href="{{ route('reports.index') }}" class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}"><p>Karyawan per Departemen</p></a></li>
                                 <li class="nav-item"><a href="#" class="nav-link"><p>Laporan Gaji</p></a></li>
                                 <li class="nav-item"><a href="#" class="nav-link"><p>Riwayat Pekerjaan</p></a></li>
                                 <li class="nav-item"><a href="#" class="nav-link"><p>Lokasi Kerja</p></a></li>
