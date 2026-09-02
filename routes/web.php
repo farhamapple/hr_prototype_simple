@@ -9,6 +9,7 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\JobController; 
 use App\Http\Controllers\JobHistoryController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -69,3 +70,5 @@ Route::middleware('auth')->group(function () {
 });
 
 });
+Route::resource('/reports', ReportController::class)
+->middleware('auth');
